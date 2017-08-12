@@ -3,7 +3,7 @@ package Util;
 import org.jsoup.Jsoup;
 import java.io.IOException;
 
-//
+// Загрузчик страниц.
 public class Downloader
 {
     // Загрузка.
@@ -11,9 +11,7 @@ public class Downloader
     {
         try
         {
-            String data = Jsoup.connect(url).get().html();
-            System.out.println(data);
-            return data;
+            return Jsoup.connect(url).get().html();
         }
         catch (IOException e)
         {
