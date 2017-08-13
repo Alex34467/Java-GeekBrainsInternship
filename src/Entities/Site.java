@@ -1,7 +1,6 @@
 package Entities;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 // Класс сайта.
 public class Site
@@ -9,7 +8,7 @@ public class Site
     // Данные.
     private int id;
     private String name;
-    private Set<Page> pages;
+    private Collection<Page> pages;
 
 
     // Конструктор.
@@ -26,6 +25,12 @@ public class Site
         pages.add(page);
     }
 
+    // Добавление страниц.
+    public void addPages(Collection<Page> pages)
+    {
+        this.pages.addAll(pages);
+    }
+
     // Геттеры.
     public int getId()
     {
@@ -37,7 +42,7 @@ public class Site
         return name;
     }
 
-    public Set<Page> getPages()
+    public Collection<Page> getPages()
     {
         return pages;
     }
