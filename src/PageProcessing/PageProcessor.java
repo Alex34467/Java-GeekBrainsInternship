@@ -6,6 +6,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -100,7 +101,7 @@ public class PageProcessor
     // Извлечение текста.
     private String extractText(Document document)
     {
-        return null;
+        throw new NotImplementedException();
     }
 
     // Извлечение ссылок.
