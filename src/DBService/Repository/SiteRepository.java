@@ -2,6 +2,8 @@ package DBService.Repository;
 
 import Entities.Site;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import java.util.Collection;
+
 
 // Репозиторий сайта.
 public class SiteRepository implements Repository<Site>
@@ -16,6 +18,13 @@ public class SiteRepository implements Repository<Site>
     // Выбор.
     @Override
     public Site getById(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    // Выбор всех сайтов.
+    @Override
+    public Collection<Site> getAll()
     {
         throw new NotImplementedException();
     }

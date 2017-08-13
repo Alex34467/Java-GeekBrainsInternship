@@ -2,7 +2,8 @@ package DBService.Repository;
 
 import Entities.Keyword;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-import java.util.Set;
+import java.util.Collection;
+
 
 // Репозиторий ключевых слов.
 public class KeywordRepository implements Repository<Keyword>
@@ -21,8 +22,15 @@ public class KeywordRepository implements Repository<Keyword>
         throw new NotImplementedException();
     }
 
-    // Выбор ключевых слов по Id личности.
-    public Set<Keyword> getKeywordsByPersonId(int id)
+    // Выбор всех ключевых слов по Id личности.
+    public Collection<Keyword> getAllKeywordsByPersonId(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    // Выбор всех ключевых слов.
+    @Override
+    public Collection<Keyword> getAll()
     {
         throw new NotImplementedException();
     }
