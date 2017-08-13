@@ -1,8 +1,6 @@
 package Entities;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 // Класс личности.
 public class Person
@@ -27,7 +25,7 @@ public class Person
         keywords.add(keyword);
     }
 
-    // Установка ключевых слов.
+    // Добавление ключевых слов.
     public void addKeywords(Collection<Keyword> keywords)
     {
         this.keywords.addAll(keywords);
