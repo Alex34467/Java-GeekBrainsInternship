@@ -3,10 +3,10 @@ package DBService;
 import java.sql.*;
 
 //
-public class DBExecutor
+public class MySQLExecutor
 {
     // Данные.
-    private static DBExecutor instance;
+    private static MySQLExecutor instance;
     private static final String url = "jdbc:mysql://localhost:3306/gbi";
     private static  final String user = "root";
     private static  final String password = "1001";
@@ -16,9 +16,9 @@ public class DBExecutor
 
 
     // Геттер.
-    public static DBExecutor getInstance()
+    public static MySQLExecutor getInstance()
     {
-        if (instance == null) instance = new DBExecutor();
+        if (instance == null) instance = new MySQLExecutor();
         return instance;
     }
 
@@ -47,9 +47,9 @@ public class DBExecutor
     }
 
     // Конструктор.
-    private DBExecutor()
+    private MySQLExecutor()
     {
-        System.out.println("Starting DBExecutor");
+        System.out.println("Starting MySQLExecutor");
         connect();
     }
 

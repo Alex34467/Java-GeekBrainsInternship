@@ -35,7 +35,7 @@ public class DBService
             // Получение личностей.
             System.out.println("Looking for persons.");
             query = "SELECT * FROM persons";
-            ResultSet resultSet = DBExecutor.getInstance().executeQuery(query);
+            ResultSet resultSet = MySQLExecutor.getInstance().executeQuery(query);
 
             // Обход результата.
             while (resultSet.next())
@@ -52,7 +52,7 @@ public class DBService
                 // Подготовка.
                 System.out.println("Looking for keywords for person: " + person.getName());
                 query = "SELECT * FROM keywords WHERE PersonID = " + person.getId();
-                ResultSet resultSet2 = DBExecutor.getInstance().executeQuery(query);
+                ResultSet resultSet2 = MySQLExecutor.getInstance().executeQuery(query);
 
                 // Добавление ключевых слов.
                 while (resultSet2.next())
@@ -72,9 +72,6 @@ public class DBService
         {
             return persons;
         }
-
-        // Возврат результата.
-        //return persons;
     }
 
     // Возврат списка страниц.
@@ -89,7 +86,7 @@ public class DBService
             // Получение списка сайтов.
             System.out.println("Looking for sites.");
             query = "SELECT * FROM Sites";
-            ResultSet resultSet = DBExecutor.getInstance().executeQuery(query);
+            ResultSet resultSet = MySQLExecutor.getInstance().executeQuery(query);
 
             // Обход результата.
             while (resultSet.next())
@@ -106,7 +103,7 @@ public class DBService
                 // Подготовка.
                 System.out.println("Looking for pages for site: " + site.getName());
                 query = "SELECT * FROM pages WHERE SiteID = " + site.getId();
-                ResultSet resultSet2 = DBExecutor.getInstance().executeQuery(query);
+                ResultSet resultSet2 = MySQLExecutor.getInstance().executeQuery(query);
 
                 // Подучение страниц.
                 while (resultSet2.next())
