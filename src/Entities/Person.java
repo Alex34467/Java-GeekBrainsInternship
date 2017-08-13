@@ -1,5 +1,6 @@
 package Entities;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,7 +10,7 @@ public class Person
     // Данные.
     private int id;
     private String name;
-    private Set<Keyword> keywords;
+    private Collection<Keyword> keywords;
 
 
     // Конструктор.
@@ -26,6 +27,12 @@ public class Person
         keywords.add(keyword);
     }
 
+    // Установка ключевых слов.
+    public void setKeywords(Collection<Keyword> keywords)
+    {
+        this.keywords = keywords;
+    }
+
     // Геттеры.
     public int getId()
     {
@@ -37,7 +44,7 @@ public class Person
         return name;
     }
 
-    public Set<Keyword> getKeywords()
+    public Collection<Keyword> getKeywords()
     {
         return keywords;
     }
