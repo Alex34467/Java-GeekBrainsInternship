@@ -1,10 +1,10 @@
 package Main;
 
 import DBService.DBService;
-import Entities.Person;
-import Entities.Site;
+import Entities.*;
 import PageProcessing.PageProcessor;
-import java.util.Set;
+import java.util.Collection;
+
 
 // Основной класс.
 public class Main
@@ -16,14 +16,14 @@ public class Main
         PageProcessor pageProcessor = new PageProcessor();
 
         // Получение списка личностей.
-        Set<Person> persons = DBService.getInstance().getPersons();
-        System.out.println();
+        Collection<Person> persons = DBService.getInstance().getPersons();
+        System.out.println(persons);
 
         // Получение списка сайтов.
-        Set<Site> sites = DBService.getInstance().getSites();
-        System.out.println();
+        Collection<Site> sites = DBService.getInstance().getSites();
+        System.out.println(sites);
 
         // Обход сайтов.
-        pageProcessor.processSites(sites);
+        //pageProcessor.processSites(sites);
     }
 }
