@@ -28,9 +28,9 @@ public class Person
     }
 
     // Установка ключевых слов.
-    public void setKeywords(Collection<Keyword> keywords)
+    public void addKeywords(Collection<Keyword> keywords)
     {
-        this.keywords = keywords;
+        this.keywords.addAll(keywords);
     }
 
     // Геттеры.
