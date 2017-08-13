@@ -2,17 +2,15 @@ package DBService;
 
 import java.sql.*;
 
-//
-public class MySQLExecutor
+// Сервис БД.
+public class MySQLExecutor implements DBExecutor
 {
     // Данные.
     private static MySQLExecutor instance;
     private static final String url = "jdbc:mysql://localhost:3306/gbi";
     private static  final String user = "root";
     private static  final String password = "1001";
-    private ResultSet resultSet;
     private Statement statement;
-    private Connection connection;
 
 
     // Геттер.
@@ -23,8 +21,12 @@ public class MySQLExecutor
     }
 
     // Выполнение запроса.
+    @Override
     public ResultSet executeQuery(String query)
     {
+        // Результат.
+        ResultSet resultSet = null;
+
         try
         {
             resultSet = statement.executeQuery(query);
@@ -38,12 +40,6 @@ public class MySQLExecutor
         {
             return resultSet;
         }
-    }
-
-    // Выполнение запроса.
-    public int executeUpdate(String query)
-    {
-        return -1;
     }
 
     // Конструктор.
@@ -60,7 +56,7 @@ public class MySQLExecutor
         try
         {
             // Плдключение.
-            connection = DriverManager.getConnection(url, user, password);
+            Connection connection = DriverManager.getConnection(url, user, password);
             System.out.println("Successfully connected to database.");
 
             // Создание состояния.
@@ -70,7 +66,5 @@ public class MySQLExecutor
         {
             System.out.println("Connection failed.");
         }
-
-
     }
 }
