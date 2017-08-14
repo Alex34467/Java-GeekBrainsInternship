@@ -59,4 +59,23 @@ public class Page
     {
         return "Id: " + id + " Name: " + name + " SiteId: " + siteId + " FoundDateTime: " + foundDateTime + " LastScanDate: " + lastScanDate;
     }
+
+    // Сравнение объектов.
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Page page = (Page) o;
+
+        return name != null ? name.equals(page.name) : page.name == null;
+    }
+
+    // Хеш-код.
+    @Override
+    public int hashCode()
+    {
+        return name != null ? name.hashCode() : 0;
+    }
 }
