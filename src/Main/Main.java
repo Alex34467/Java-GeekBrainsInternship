@@ -3,7 +3,9 @@ package Main;
 import DBService.DBService;
 import Entities.*;
 import PageProcessing.PageProcessor;
+import PageProcessing.XMLParser;
 import java.util.Collection;
+import java.util.Set;
 
 
 // Основной класс.
@@ -20,10 +22,17 @@ public class Main
         //System.out.println(persons);
 
         // Получение списка сайтов.
-        Collection<Site> sites = DBService.getInstance().getSites();
-        System.out.println(sites);
+        //Collection<Site> sites = DBService.getInstance().getSites();
+        //System.out.println(sites);
 
         // Обход сайтов.
-        pageProcessor.processSites(sites);
+        //pageProcessor.processSites(sites);
+
+        // Проверка парсинга ссылок.
+        Set<String> data = XMLParser.parseXML("https://promo.ingate.ru/sitemap.xml");
+        for(String link : data)
+        {
+            System.out.println(link);
+        }
     }
 }
