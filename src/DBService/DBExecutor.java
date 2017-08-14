@@ -7,4 +7,7 @@ public interface DBExecutor
 {
     // Выполнение запроса.
     ResultSet executeQuery(String query);
+
+    // Выполнение запроса.
+    void executeUpdate(String query);
 }
