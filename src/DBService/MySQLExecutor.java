@@ -42,6 +42,20 @@ public class MySQLExecutor implements DBExecutor
         }
     }
 
+    // Выполнение запроса.
+    @Override
+    public void executeUpdate(String query)
+    {
+        try
+        {
+            statement.executeUpdate(query);
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     // Конструктор.
     private MySQLExecutor()
     {
