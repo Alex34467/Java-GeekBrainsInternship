@@ -5,17 +5,17 @@ public class Page
 {
     // Данные.
     private int id;
-    private String name;
+    private String url;
     private int siteId;
     private String foundDateTime;
     private String lastScanDate;
 
 
     // Конструктор.
-    public Page(final int id, final String name, final int siteId, final String foundDateTime, final String lastScanDate)
+    public Page(final int id, final String url, final int siteId, final String foundDateTime, final String lastScanDate)
     {
         this.id = id;
-        this.name = name;
+        this.url = url;
         this.siteId = siteId;
         this.foundDateTime = foundDateTime;
         this.lastScanDate = lastScanDate;
@@ -27,15 +27,21 @@ public class Page
         this(id, name, siteId, null, null);
     }
 
+    // Конструктор.
+    public Page(final String name, final int siteId, final String foundDateTime, final String lastScanDate)
+    {
+        this(-1, name, siteId, foundDateTime, lastScanDate);
+    }
+
     // Геттеры.
     public int getId()
     {
         return id;
     }
 
-    public String getName()
+    public String getUrl()
     {
-        return name;
+        return url;
     }
 
     public int getSiteId()
@@ -57,7 +63,7 @@ public class Page
     @Override
     public String toString()
     {
-        return "Id: " + id + " Name: " + name + " SiteId: " + siteId + " FoundDateTime: " + foundDateTime + " LastScanDate: " + lastScanDate;
+        return "Id: " + id + " Url: " + url + " SiteId: " + siteId + " FoundDateTime: " + foundDateTime + " LastScanDate: " + lastScanDate;
     }
 
     // Сравнение объектов.
@@ -69,13 +75,13 @@ public class Page
 
         Page page = (Page) o;
 
-        return name != null ? name.equals(page.name) : page.name == null;
+        return url != null ? url.equals(page.url) : page.url == null;
     }
 
     // Хеш-код.
     @Override
     public int hashCode()
     {
-        return name != null ? name.hashCode() : 0;
+        return url != null ? url.hashCode() : 0;
     }
 }
