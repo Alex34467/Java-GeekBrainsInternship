@@ -16,14 +16,14 @@ public class Main
         PageProcessor pageProcessor = new PageProcessor();
 
         // Получение списка личностей.
-        Collection<Person> persons = DBService.getInstance().getPersons();
-        System.out.println(persons);
+        //Collection<Person> persons = DBService.getInstance().getPersons();
+        //System.out.println(persons);
 
         // Получение списка сайтов.
         Collection<Site> sites = DBService.getInstance().getSites();
         System.out.println(sites);
 
         // Обход сайтов.
-        //pageProcessor.processSites(sites);
+        pageProcessor.processSites(sites);
     }
 }
