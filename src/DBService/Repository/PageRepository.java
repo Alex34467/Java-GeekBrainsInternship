@@ -23,14 +23,50 @@ public class PageRepository implements Repository<Page>
     @Override
     public void add(Page page)
     {
-        throw new NotImplementedException();
+        // Подготовка запроса.
+        String queryTail1 = "VALUES (\"" + page.getUrl() + "\", " + page.getSiteId() + ", \"" + page.getFoundDateTime() + "\")";
+        String queryTal12 = ", lastScanDate)";
+        String queryTail3 = " ,\"" + page.getLastScanDate() + "\")";
+
+        // Сборка запроса.
+        String query = "INSERT INTO Pages (url, siteId, foundDateTime) ";
+        query += (page.getLastScanDate() == null) ? queryTail1 : queryTal12 + queryTail1 + queryTail3;
+
+        // Выполнение запроса.
+        executor.executeUpdate(query);
     }
 
-    // Выбор.
+    // Выбор страницы gj Id..
     @Override
     public Page getById(int id)
     {
         throw new NotImplementedException();
+    }
+
+    // Выбор страницы по имени.
+    public Page getByName(String name)
+    {
+        // Подготовка запроса.
+        String query = "SELECT * FROM Pages WHERE Name = " + name;
+        ResultSet resultSet = executor.executeQuery(query);
+
+        // Анализ результата.
+        Page page = null;
+        try
+        {
+            // Обход результата.
+            while (resultSet.next())
+            {
+                page = new Page(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(3), resultSet.getString(4), resultSet.getString(5));
+            }
+        }
+        catch (SQLException | NullPointerException e)
+        {
+            return page;
+        }
+
+        // Возврат результата.
+        return page;
     }
 
     // Выбор всех страниц по Id сайта.
