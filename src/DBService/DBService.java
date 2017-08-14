@@ -2,6 +2,9 @@ package DBService;
 
 import DBService.Repository.*;
 import Entities.*;
+import Util.Util;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import java.util.*;
 
 // БД сервис.
@@ -54,6 +57,47 @@ public class DBService
 
         // Возврат результата.
         return sites;
+    }
+
+    // Добавление ссылок в БД и преобразует их в Page.
+    public Collection<Page> addAllLinks(Set<String> links, int siteId)
+    {
+        // Данные.
+        Collection<Page> pages = new HashSet<>();
+
+        // Обход ссылок.
+        for (String link : links)
+        {
+            // Созание страницы.
+            Page page = createPageFromLink(link, siteId);
+            pages.add(page);
+        }
+
+        // Возврат результата.
+        return pages;
+    }
+
+    // Создание сираницы из ссылки.
+    private Page createPageFromLink(String link, int siteId)
+    {
+        // Данные.
+        Page page = null;
+
+        // Поиск страницы.
+        page = pageRepository.getByName(link);
+
+        // Добавление страницы.
+        if (page == null)
+        {
+            // Сборка страницы.
+            page = new Page(link, siteId, Util.getCuttentDateTime(), null);
+
+            // Добюавление.
+            pageRepository.add(page);
+        }
+
+        // Возврат результата.
+        return page;
     }
 
     // Конструктор.
