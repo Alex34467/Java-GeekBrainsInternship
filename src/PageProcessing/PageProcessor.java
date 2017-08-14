@@ -1,10 +1,9 @@
 package PageProcessing;
 
-import Entities.Page;
-import Entities.Site;
+import DBService.DBService;
+import Entities.*;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
+import org.jsoup.nodes.*;
 import org.jsoup.select.Elements;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.io.IOException;
@@ -15,7 +14,8 @@ import java.util.*;
 public class PageProcessor
 {
     // Данные.
-    private Map<Page, Boolean> pageVisited;
+    private Map<String, Boolean> pageVisited;
+    private int currentSiteId = -1;
 
 
     // Конструктор.
@@ -25,47 +25,56 @@ public class PageProcessor
     }
 
     // Обработка сайтов.
-    public void processSites(Set<Site> sites)
+    public void processSites(Collection<Site> sites)
     {
+        for (Site site: sites)
+        {
+            processSite(site);
+        }
+    }
+
+    // Обработка сайта.
+    private void processSite(Site site)
+    {
+        // Получение информации об Id сайта.
+        currentSiteId = site.getId();
+
         // Добавление страниц.
-        addPagesFromSites(sites);
+        pageVisited = addPagesFromSite(site);
 
         // Обработка страниц.
         processPages();
     }
 
     // Добавление страниц в список.
-    private void addPagesFromSites(Set<Site> sites)
+    private Map<String, Boolean> addPagesFromSite(Site site)
     {
-        System.out.println("Adding pages.");
+        // Данные.
+        Map<String, Boolean> pagesMap = new HashMap<>();
 
-        // Обход сайтов.
-        for (Site site : sites)
+        // Обход страниц сайта.
+        for (Page page : site.getPages())
         {
-            System.out.println("   Adding pages for site: " + site.getName());
-
-            // Обход страниц сайта.
-            for (Page page : site.getPages())
+            if (true)
             {
-                if (true)
-                {
-                    pageVisited.put(page, false);
-                    System.out.println("      Page " + page.getName() + " added.");
-                }
-                else
-                {
-                    System.out.println("      Page " + page.getName() + " not added.");
-                }
+                pagesMap.put(page.getUrl(), false);
+                System.out.println("      Page " + page.getUrl() + " added.");
+            }
+            else
+            {
+                System.out.println("      Page " + page.getUrl() + " not added.");
             }
         }
-        System.out.println("Pages addition completed.\n");
+
+        // Возврат результата.
+        return pagesMap;
     }
 
     // Обработка страциц.
     private void processPages()
     {
         System.out.println("Processing pages.");
-        for (Map.Entry<Page, Boolean> entry : pageVisited.entrySet())
+        for (Map.Entry<String, Boolean> entry : pageVisited.entrySet())
         {
             if (!entry.getValue())
             {
@@ -76,21 +85,25 @@ public class PageProcessor
     }
 
     // Обработка страницы.
-    private void processPage(Page page)
+    private void processPage(String page)
     {
         try
         {
             // Загрузка страницы.
-            System.out.println("   Processing page: " + page.getName());
-            Document document = Jsoup.connect(page.getName()).get();
+            System.out.println("   Processing page: " + page);
+            Document document = Jsoup.connect(page).get();
 
             // Извлечение ссылок.
             System.out.println("      Extracting links.");
             Set<String> links = extractLinks(document);
+            System.out.println("      Found " + links.size() + " links.");
 
             // Извлечение текста.
-            System.out.println("      Extracting text.");
-            String pageText = extractText(document);
+            //System.out.println("      Extracting text.");
+            //String pageText = extractText(document);
+
+            // Добавление ссылок в список и БД.
+            processLinks(links);
         }
         catch (IOException e)
         {
@@ -113,7 +126,7 @@ public class PageProcessor
         try
         {
             // Получение ссылок.
-            Elements links = document.select("a[href]");
+            Elements links = document.select("a[href]").unwrap();
             String baseUri = new URL(document.location()).getHost();
 
             // Обход ссылок.
@@ -124,6 +137,12 @@ public class PageProcessor
                 if (!linkStr.isEmpty())
                 {
                     String host = new URL(linkStr).getHost();
+
+                    // Очистка от якоря.
+                    if (linkStr.contains("#"))
+                    {
+                        linkStr = linkStr.substring(0, linkStr.indexOf("#"));
+                    }
 
                     // Добавление.
                     if (host.equals(baseUri))
@@ -139,7 +158,17 @@ public class PageProcessor
         catch (IOException e)
         {
             e.printStackTrace();
-            return null;
+            return linksSet;
         }
+    }
+
+    // Добавление ссылок в список и БД.
+    private void processLinks(Set<String> links)
+    {
+        // Фильтрация ссылок.
+        links.removeAll(pageVisited.keySet());
+
+        // Добавление ссылок в БД.
+        Collection<Page> pages = DBService.getInstance().addAllLinks(links, currentSiteId);
     }
 }
