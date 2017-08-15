@@ -11,6 +11,7 @@ public class Crawler
 {
     // Данные.
     PageProcessor pageProcessor;
+    private boolean isRunning = true;
 
     // Конструктор.
     public Crawler()
@@ -21,20 +22,25 @@ public class Crawler
     // Запуск.
     public void start()
     {
-        // Поиск новых сайтов.
-        findNewSites();
+        while (isRunning)
+        {
+            // Поиск новых сайтов.
+            findNewSites();
 
-        // Обход страниц.
-        processPages();
+            // Обход страниц.
+            processPages();
+        }
     }
 
     // Поиск новых сайтов.
     private void findNewSites()
     {
         // Получение списка сайтов.
+        System.out.println("   Looking for sites without pages...");
         Collection<Site> sites = DBService.getInstance().getSitesWthoutPages();
 
         // Добавление robots.txt.
+        System.out.println("   Found " + sites.size() + " sites.");
         for (Site site : sites)
         {
             // Подготовка страницы.
@@ -44,6 +50,7 @@ public class Crawler
             // Добавление страницы.
             DBService.getInstance().addPage(page);
         }
+        System.out.println("   Site searching completed.");
     }
 
     // Обход страниц.
@@ -52,19 +59,35 @@ public class Crawler
         // Получение непросканированной страницы.
         Page page = DBService.getInstance().getUnscannedPage();
 
-        // Анализ страницы.
-        String url = page.getUrl().toLowerCase();
-        if (url.endsWith("robots.txt"))
+        if (page != null)
         {
-            pageProcessor.processRobots(page);
-        }
-        else if (url.endsWith("sitemap.xml"))
-        {
-            pageProcessor.processSitemap(page);
+            // Анализ страницы.
+            System.out.println("Process page: " + page.getUrl());
+            String url = page.getUrl().toLowerCase();
+            if (url.endsWith("robots.txt"))
+            {
+                System.out.println("   Its robots.txt page.");
+                pageProcessor.processRobots(page);
+            }
+            else if (url.endsWith("sitemap.xml"))
+            {
+                System.out.println("   Its Sitemap.xml page.");
+                pageProcessor.processSitemap(page);
+            }
+            else
+            {
+                System.out.println("   Its usual page.");
+                pageProcessor.processPage(page);
+            }
+
+            // Обновление информации о странице.
+            DBService.getInstance().updatePageScanDate(page, Util.getCuttentDateTime());
+            System.out.println("Page processed.");
         }
         else
         {
-            pageProcessor.processPage(page);
+            System.out.println("All pages proceeded.");
+            isRunning = false;
         }
     }
 }
