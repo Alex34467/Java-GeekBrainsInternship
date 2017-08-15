@@ -15,13 +15,11 @@ public class RobotsParser
         {
             // Выделение хоста.
             URL url = new URL(siteUrl);
-            String hostname = url.getProtocol() + "://" + url.getHost();
-            hostname += "/robots.txt";
 
             // Поиск Sitemap.
             String line;
             String result = null;
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new URL(hostname).openStream()));
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(url.openStream()));
             while ((line = bufferedReader.readLine()) != null)
             {
                 if (line.startsWith("Sitemap"))
@@ -36,7 +34,6 @@ public class RobotsParser
         }
         catch (IOException e)
         {
-            e.printStackTrace();
             return null;
         }
     }
