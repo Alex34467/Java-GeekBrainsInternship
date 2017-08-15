@@ -1,11 +1,11 @@
-package PageProcessing;
+package PageProcessing.XMLParser;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 import java.util.*;
 
 // SAX парсер.
-public class CustomSAXParser extends DefaultHandler
+public class CustomSAXHandler extends DefaultHandler
 {
     // Данные.
     private boolean processElement = false;
@@ -13,7 +13,7 @@ public class CustomSAXParser extends DefaultHandler
 
 
     // Конструктор.
-    public CustomSAXParser()
+    public CustomSAXHandler()
     {
         links = new HashSet<>();
     }

@@ -1,4 +1,4 @@
-package PageProcessing;
+package PageProcessing.XMLParser;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.*;
@@ -19,7 +19,7 @@ public class XMLParser
             // Подготовка.
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser parser = factory.newSAXParser();
-            CustomSAXParser customSAXParser = new CustomSAXParser();
+            CustomSAXHandler customSAXParser = new CustomSAXHandler();
 
             // Парсинг.
             parser.parse(url, customSAXParser);

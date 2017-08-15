@@ -1,10 +1,8 @@
 package Main;
 
-import DBService.DBService;
-import Entities.*;
 import PageProcessing.PageProcessor;
-import PageProcessing.XMLParser;
-import java.util.Collection;
+import PageProcessing.XMLParser.XMLParser;
+
 import java.util.Set;
 
 
