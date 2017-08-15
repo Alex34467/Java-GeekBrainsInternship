@@ -52,7 +52,7 @@ public class MySQLExecutor implements DBExecutor
         }
         catch (SQLException e)
         {
-            e.printStackTrace();
+
         }
     }
 
