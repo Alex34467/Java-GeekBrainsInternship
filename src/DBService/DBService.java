@@ -13,6 +13,7 @@ public class DBService
     private KeywordRepository keywordRepository;
     private SiteRepository siteRepository;
     private PageRepository pageRepository;
+    private PersonsPageRankRepository personPageRankRepository;
 
 
     // Геттер.
@@ -22,16 +23,28 @@ public class DBService
         return instance;
     }
 
+    // Добавление страницы.
+    public void addPage(Page page)
+    {
+        pageRepository.add(page);
+    }
+
+    // Добавление записи о количестве упиминаний личности на странице.
+    public void addPersonsPageRank(PersonsPageRank rank)
+    {
+        personPageRankRepository.add(rank);
+    }
+
     // Возврат списка личностей.
     public Collection<Person> getPersons()
     {
         return personRepository.getAll();
     }
 
-    // Возврат клюсывах слов.
-    public Collection<Keyword> getKeywords(Person person)
+    // Возврат ключевых слов по Id личности.
+    public Collection<Keyword> getKeywordsByPersonId(int personId)
     {
-        return keywordRepository.getAllKeywordsByPersonId(person.getId());
+        return keywordRepository.getAllKeywordsByPersonId(personId);
     }
 
     // Возврат сайтов без страниц.
@@ -46,19 +59,6 @@ public class DBService
         return siteRepository.getAll();
     }
 
-    // Добавление страницы.
-    public void addPage(Page page)
-    {
-        pageRepository.add(page);
-    }
-
-    // Обновление даты сканирования.
-    public void updatePageScanDate(Page page, String scanDate)
-    {
-        pageRepository.updatePageScanDate(page, scanDate);
-    }
-
-
     // Получение страниц сайта.
     public Collection<Page> getPages(Site site)
     {
@@ -69,6 +69,12 @@ public class DBService
     public Page getUnscannedPage()
     {
         return pageRepository.getUnscannedpage();
+    }
+
+    // Обновление даты сканирования.
+    public void updatePageScanDate(Page page, String scanDate)
+    {
+        pageRepository.updatePageScanDate(page, scanDate);
     }
 
     // Конструктор.
@@ -82,5 +88,6 @@ public class DBService
         keywordRepository = new KeywordRepository(executor);
         siteRepository = new SiteRepository(executor);
         pageRepository = new PageRepository(executor);
+        personPageRankRepository = new PersonsPageRankRepository(executor);
     }
 }
