@@ -52,6 +52,13 @@ public class DBService
         pageRepository.add(page);
     }
 
+    // Обновление даты сканирования.
+    public void updatePageScanDate(Page page, String scanDate)
+    {
+        pageRepository.updatePageScanDate(page, scanDate);
+    }
+
+
     // Получение страниц сайта.
     public Collection<Page> getPages(Site site)
     {
