@@ -69,6 +69,31 @@ public class PageRepository implements Repository<Page>
         return page;
     }
 
+    // Выбор непросканированной страницы.
+    public Page getUnscannedpage()
+    {
+        // Подготовка запроса.
+        String query = "SELECT * FROM Pages WHERE lastScanDate IS NULL LIMIT 1";
+        ResultSet resultSet = executor.executeQuery(query);
+
+        // Анализ результата.
+        Page page = null;
+        try
+        {
+            while (resultSet.next())
+            {
+                page = new Page(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(3), resultSet.getString(4), resultSet.getString(5));
+            }
+        }
+        catch (SQLException e)
+        {
+            return page;
+        }
+
+        // Возврат результата.
+        return page;
+    }
+
     // Выбор всех страниц по Id сайта.
     public Collection<Page> getAllPagesBySiteId(int id)
     {
@@ -107,6 +132,16 @@ public class PageRepository implements Repository<Page>
     public void delete(Page page)
     {
         throw new NotImplementedException();
+    }
+
+    // Обновление информации о времени сканирования.
+    public void updatePageScanDate(Page page, String scanDate)
+    {
+        // Подготовка запроса.
+        String query = "UPDATE Pages SET LastScanDate = \"" + scanDate + "\" WHERE id = " + page.getId();
+
+        // Выполнение запроса.
+        executor.executeUpdate(query);
     }
 
     // Обновление.
