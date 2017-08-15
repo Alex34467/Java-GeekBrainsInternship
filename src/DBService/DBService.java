@@ -2,9 +2,6 @@ package DBService;
 
 import DBService.Repository.*;
 import Entities.*;
-import Util.Util;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.util.*;
 
 // БД сервис.
@@ -28,76 +25,43 @@ public class DBService
     // Возврат списка личностей.
     public Collection<Person> getPersons()
     {
-        // Получение личностей.
-        Collection<Person> persons = personRepository.getAll();
-
-        // Получение ключевых слов.
-        for (Person person : persons)
-        {
-            Collection<Keyword> keywords = keywordRepository.getAllKeywordsByPersonId(person.getId());
-            person.addKeywords(keywords);
-        }
-
-        // Возврат результата.
-        return persons;
+        return personRepository.getAll();
     }
 
-    // Возврат списка страниц.
+    // Возврат клюсывах слов.
+    public Collection<Keyword> getKeywords(Person person)
+    {
+        return keywordRepository.getAllKeywordsByPersonId(person.getId());
+    }
+
+    // Возврат сайтов без страниц.
+    public Collection<Site> getSitesWthoutPages()
+    {
+        return siteRepository.getSitesWithoutPages();
+    }
+
+    // Возврат списка сайтов.
     public Collection<Site> getSites()
     {
-        // Получение сайтов.
-        Collection<Site> sites = siteRepository.getAll();
-
-        // Получение страниц.
-        for (Site site : sites)
-        {
-            Collection<Page> pages = pageRepository.getAllPagesBySiteId(site.getId());
-            site.addPages(pages);
-        }
-
-        // Возврат результата.
-        return sites;
+        return siteRepository.getAll();
     }
 
-    // Добавление ссылок в БД и преобразует их в Page.
-    public Collection<Page> addAllLinks(Set<String> links, int siteId)
+    // Добавление страницы.
+    public void addPage(Page page)
     {
-        // Данные.
-        Collection<Page> pages = new HashSet<>();
-
-        // Обход ссылок.
-        for (String link : links)
-        {
-            // Созание страницы.
-            Page page = createPageFromLink(link, siteId);
-            pages.add(page);
-        }
-
-        // Возврат результата.
-        return pages;
+        pageRepository.add(page);
     }
 
-    // Создание сираницы из ссылки.
-    private Page createPageFromLink(String link, int siteId)
+    // Получение страниц сайта.
+    public Collection<Page> getPages(Site site)
     {
-        // Данные.
-        Page page = null;
+        return pageRepository.getAllPagesBySiteId(site.getId());
+    }
 
-        // Поиск страницы.
-        page = pageRepository.getByName(link);
-
-        // Добавление страницы.
-        if (page == null)
-        {
-            // Сборка страницы.
-            page = new Page(link, siteId, Util.getCuttentDateTime(), null);
-
-            // Добюавление.
-            pageRepository.add(page);
-        }
-
-        // Возврат результата.
-        return page;
+    // Возврат непросканированной страницы.
+    public Page getUnscannedPage()
+    {
+        return pageRepository.getUnscannedpage();
     }
 
     // Конструктор.
