@@ -65,23 +65,4 @@ public class Page
     {
         return "Id: " + id + " Url: " + url + " SiteId: " + siteId + " FoundDateTime: " + foundDateTime + " LastScanDate: " + lastScanDate;
     }
-
-    // Сравнение объектов.
-    @Override
-    public boolean equals(Object o)
-    {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Page page = (Page) o;
-
-        return url != null ? url.equals(page.url) : page.url == null;
-    }
-
-    // Хеш-код.
-    @Override
-    public int hashCode()
-    {
-        return url != null ? url.hashCode() : 0;
-    }
 }
