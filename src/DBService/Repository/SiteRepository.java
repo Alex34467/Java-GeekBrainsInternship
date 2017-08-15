@@ -61,6 +61,32 @@ public class SiteRepository implements Repository<Site>
         return sites;
     }
 
+    // Выбор сайтов без страниц.
+    public Collection<Site> getSitesWithoutPages()
+    {
+        // Поготовка запроса.
+        String query = "SELECT sites.id, name FROM Sites LEFT JOIN Pages ON pages.SiteID = sites.id WHERE url IS NULL";
+        ResultSet resultSet = executor.executeQuery(query);
+
+        // Анализ результата.
+        Collection<Site> sites = new HashSet<>();
+        try
+        {
+            while (resultSet.next())
+            {
+                Site site = new Site(resultSet.getInt(1), resultSet.getString(2));
+                sites.add(site);
+            }
+        }
+        catch (SQLException e)
+        {
+            return sites;
+        }
+
+        // Возврат результата.
+        return sites;
+    }
+
     // Удаление.
     @Override
     public void delete(Site site)
