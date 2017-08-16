@@ -17,12 +17,13 @@ class KeywordParserTest
     void testCountMatchesFromString()
     {
         // Подготовка.
+        KeywordParser parser = new KeywordParser();
         String page = "word";
         String keyword = "word";
         int expected = 1;
 
         // Тест.
-        int actual = KeywordParser.countMatches(page, keyword);
+        int actual = parser.countMatches(page, keyword);
 
         // Проверка.
         assertEquals(expected, actual);
@@ -33,13 +34,14 @@ class KeywordParserTest
     void testCountMatchesFromPage() throws IOException
     {
         // Подготовка.
+        KeywordParser parser = new KeywordParser();
         String url = "https://lenta.ru/news/2017/08/15/nezavis_indiya/";
         String page = Jsoup.connect(url).get().html();
         String keyword = "Путин";
         int expected = 17;
 
         // Текст.
-        int actual = KeywordParser.countMatches(page, keyword);
+        int actual = parser.countMatches(page, keyword);
 
         // Проверка.
         assertEquals(expected, actual);
