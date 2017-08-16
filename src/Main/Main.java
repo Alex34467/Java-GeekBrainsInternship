@@ -1,6 +1,6 @@
 package Main;
 
-import PageProcessing.Crawler;
+import PageProcessing.CrawlerManager;
 
 // Основной класс.
 public class Main
@@ -9,6 +9,6 @@ public class Main
     public static void main(String[] args)
     {
         // Запуск краулера.
-        new Crawler().start();
+        new CrawlerManager().start(60);
     }
 }
