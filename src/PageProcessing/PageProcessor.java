@@ -1,17 +1,15 @@
 package PageProcessing;
 
 import DBService.DBService;
-import Entities.Keyword;
-import Entities.Page;
-import Entities.Person;
-import Entities.PersonsPageRank;
+import Entities.*;
 import PageProcessing.XMLParser.XMLParser;
-import Parsing.KeywordParser;
-import Parsing.RobotsParser;
+import Parsing.*;
 import Util.Util;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import java.io.IOException;
+import java.util.*;
 
-import java.util.Collection;
-import java.util.Set;
 
 // Обработчик страниц.
 public class PageProcessor
@@ -20,6 +18,37 @@ public class PageProcessor
     public PageProcessor()
     {
 
+    }
+
+    // Обработка страницы.
+    public void processPage(Page page)
+    {
+        // Анализ страницы.
+        System.out.println("Process page: " + page.getUrl());
+        String url = page.getUrl().toLowerCase();
+        if (url.endsWith("robots.txt"))
+        {
+            System.out.println("   Its robots.txt page.");
+            processRobots(page);
+        }
+        else if (url.contains("sitemap") && url.endsWith(".xml"))
+        {
+            System.out.println("   Its Sitemap.xml page.");
+            processSitemap(page);
+        }
+        else if (url.endsWith(".gz"))
+        {
+            System.out.println("   Its Sitemap archive.");
+        }
+        else
+        {
+            System.out.println("   Its usual page.");
+            processUsualPage(page);
+        }
+
+        // Обновление информации о странице.
+        DBService.getInstance().updatePageScanDate(page, Util.getCuttentDateTime());
+        System.out.println("Page processed.");
     }
 
     // Обработка robots.txt.
@@ -65,30 +94,40 @@ public class PageProcessor
         System.out.println("   All links added.");
     }
 
-    // Обработка страницы.
-    public void processPage(Page page)
+    // Обработка обычной страницы.
+    public void processUsualPage(Page page)
     {
         // Получение списка личностей.
         System.out.println("   Парсинг текста.");
         Collection<Person> persons = DBService.getInstance().getPersons();
 
-        // Обход личностей.
-        for (Person person : persons)
+        try
         {
-            // Получение ключевых слов.
-            Collection<Keyword> keywords = DBService.getInstance().getKeywordsByPersonId(person.getId());
+            // Получение страницы.
+            String document = Jsoup.connect(page.getUrl()).get().html();
 
-            // Обход ключевых слов.
-            int matches = 0;
-            for (Keyword keyword : keywords)
+            // Обход личностей.
+            for (Person person : persons)
             {
-                // Подсчет совпадеий.
-                matches += KeywordParser.countMatches(page.getUrl(), keyword.getName());
-            }
+                // Получение ключевых слов.
+                Collection<Keyword> keywords = DBService.getInstance().getKeywordsByPersonId(person.getId());
 
-            // Запись результата в БД.
-            PersonsPageRank rank = new PersonsPageRank(person.getId(), page.getId(), matches);
-            DBService.getInstance().addPersonsPageRank(rank);
+                // Обход ключевых слов.
+                int matches = 0;
+                for (Keyword keyword : keywords)
+                {
+                    // Подсчет совпадеий.
+                    matches += KeywordParser.countMatches(document, keyword.getName());
+                }
+
+                // Запись результата в БД.
+                PersonsPageRank rank = new PersonsPageRank(person.getId(), page.getId(), matches);
+                DBService.getInstance().addPersonsPageRank(rank);
+            }
+        }
+        catch (IOException e)
+        {
+
         }
     }
 }
