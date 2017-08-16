@@ -6,25 +6,49 @@ import PageProcessing.XMLParser.XMLParser;
 import Parsing.*;
 import Util.Util;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import java.io.IOException;
 import java.util.*;
 
 
 // Обработчик страниц.
-public class PageProcessor
+public class PageProcessor implements Runnable
 {
-    // Конструктор.
-    public PageProcessor()
-    {
+    // Данные.
+    private String name;
+    private Collection<Person> persons;
+    private CrawlerManager manager;
+    private KeywordParser parser;
 
+
+    // Конструктор.
+    public PageProcessor(CrawlerManager manager, String name)
+    {
+        this.name = name;
+        this.manager = manager;
+        persons = manager.getPersons();
+        this.parser = new KeywordParser();
+    }
+
+    // Выполнение.
+    @Override
+    public void run()
+    {
+        while (true)
+        {
+            // Получение страницы.
+            Page page = manager.getPage();
+            System.out.println(name + ": taked " + page.getUrl());
+
+            // Обработка станицы.
+            processPage(page);
+        }
     }
 
     // Обработка страницы.
     public void processPage(Page page)
     {
         // Анализ страницы.
-        System.out.println("Process page: " + page.getUrl());
+        System.out.println(name +": process page: " + page.getUrl());
         String url = page.getUrl().toLowerCase();
         if (url.endsWith("robots.txt"))
         {
@@ -48,7 +72,7 @@ public class PageProcessor
 
         // Обновление информации о странице.
         DBService.getInstance().updatePageScanDate(page, Util.getCuttentDateTime());
-        System.out.println("Page processed.");
+        System.out.println(name + ": page processed.");
     }
 
     // Обработка robots.txt.
@@ -99,7 +123,6 @@ public class PageProcessor
     {
         // Получение списка личностей.
         System.out.println("   Парсинг текста.");
-        Collection<Person> persons = DBService.getInstance().getPersons();
 
         try
         {
@@ -110,14 +133,14 @@ public class PageProcessor
             for (Person person : persons)
             {
                 // Получение ключевых слов.
-                Collection<Keyword> keywords = DBService.getInstance().getKeywordsByPersonId(person.getId());
+                Collection<Keyword> keywords = person.getKeywords();
 
                 // Обход ключевых слов.
                 int matches = 0;
                 for (Keyword keyword : keywords)
                 {
                     // Подсчет совпадеий.
-                    matches += KeywordParser.countMatches(document, keyword.getName());
+                    matches += parser.countMatches(document, keyword.getName());
                 }
 
                 // Запись результата в БД.
