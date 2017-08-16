@@ -18,6 +18,7 @@ public class PageProcessor implements Runnable
     private Collection<Person> persons;
     private CrawlerManager manager;
     private KeywordParser parser;
+    private boolean isRunning;
 
 
     // Конструктор.
@@ -27,20 +28,29 @@ public class PageProcessor implements Runnable
         this.manager = manager;
         persons = manager.getPersons();
         this.parser = new KeywordParser();
+        isRunning = true;
     }
 
     // Выполнение.
     @Override
     public void run()
     {
-        while (true)
+        while (isRunning)
         {
             // Получение страницы.
             Page page = manager.getPage();
-            System.out.println(name + ": taked " + page.getUrl());
 
-            // Обработка станицы.
-            processPage(page);
+            if (page != null)
+            {
+                System.out.println(name + ": take page " + page.getUrl());
+
+                // Обработка станицы.
+                processPage(page);
+            }
+            else
+            {
+                isRunning = false;
+            }
         }
     }
 
@@ -72,6 +82,7 @@ public class PageProcessor implements Runnable
 
         // Обновление информации о странице.
         DBService.getInstance().updatePageScanDate(page, Util.getCuttentDateTime());
+        manager.completePageProcessing(page);
         System.out.println(name + ": page processed.");
     }
 
