@@ -12,6 +12,8 @@ public class CrawlerManager
     private Stack<Page> pages;
     private Set<Thread> threads;
     private static Collection<Person> persons;
+    private Set<String> processingLinks;
+    private final int addPagesCount = 100;
 
 
     // Конструктор.
@@ -20,6 +22,7 @@ public class CrawlerManager
         System.out.println("Crawler manager started.");
         threads = new HashSet<>();
         pages = new Stack<>();
+        processingLinks = new HashSet<>();
     }
 
     // Работа.
@@ -41,11 +44,19 @@ public class CrawlerManager
         // Добавление страниц.
         if (pages.empty())
         {
-            addPages(100);
+            addPages(addPagesCount);
         }
 
         // Возврат страницы.
-        return pages.pop();
+        Page page = pages.pop();
+        processingLinks.add(page.getUrl());
+        return page;
+    }
+
+    // Завершение обхода страницы.
+    public synchronized void completePageProcessing(Page page)
+    {
+        processingLinks.remove(page.getUrl());
     }
 
     // Возврат личностей.
@@ -113,7 +124,16 @@ public class CrawlerManager
         // Добавление страниц.
         for (Page page : pages2)
         {
-            this.pages.push(page);
+            if (!processingLinks.contains(page.getUrl()))
+            {
+                this.pages.push(page);
+            }
+        }
+
+        // Проверка.
+        if (pages.empty())
+        {
+            addPages(addPagesCount);
         }
     }
 }
