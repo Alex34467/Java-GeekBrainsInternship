@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 public class KeywordParser
 {
     // Парсинг.
-    public static int countMatches(String page, String keyword)
+    public int countMatches(String page, String keyword)
     {
         // Данные.
         int result = 0;
