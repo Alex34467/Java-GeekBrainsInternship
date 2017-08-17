@@ -2,6 +2,7 @@ package DBService.Repository;
 
 import DBService.DBExecutor;
 import Entities.Page;
+import Util.Util;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.sql.*;
 import java.util.*;
@@ -105,8 +106,13 @@ public class PageRepository implements Repository<Page>
     // Выбор sitemap страниц.
     public Collection<Page> getSitemapPages(int count)
     {
+        // Данные.
+        int hoursDiff = 20;
+        String now = Util.getCuttentDateTime();
+
         // Подготовка запроса.
-        String query = "SELECT * FROM Pages WHERE (Url LIKE \"%sitemap%\") AND (Url LIKE \"%.xml\") ORDER BY LastScanDate LIMIT " + count;
+        String query = "SELECT * FROM Pages WHERE (Url LIKE \"%sitemap%\") AND (Url LIKE \"%.xml\") AND (TIMESTAMPDIFF (HOUR,"
+                + now + " , LastScanDate) <= " + hoursDiff + ") ORDER BY LastScanDate LIMIT " + count;
 
         // Выполнение запроса.
         ResultSet resultSet = executor.executeQuery(query);
