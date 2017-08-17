@@ -14,6 +14,7 @@ public class CrawlerManager
     private static Collection<Person> persons;
     private Set<String> processingLinks;
     private final int addPagesCount = 100;
+    private boolean unscannedPages = true;
 
 
     // Конструктор.
@@ -31,10 +32,10 @@ public class CrawlerManager
         // Получение списка личностей.
         addPersons();
 
-        // Поиск новых страниц.
+        // Поиск новых сайтов.
         findNewSites();
 
-        // Данные.
+        // Запуск обработчиков.
         startProcessors(processorsCount);
     }
 
@@ -118,11 +119,36 @@ public class CrawlerManager
     private void addPages(int count)
     {
         // Получение страниц.
-        System.out.println("Adding " + count + " pages.");
-        Collection<Page> pages2 = DBService.getInstance().getUnscannedPages(count);
+        Collection<Page> pages;
+        if (unscannedPages)
+        {
+            // Получение непросканированных страниц.
+            System.out.println("Adding " + count + " unscanned pages.");
+            pages = DBService.getInstance().getUnscannedPages(count);
+
+            // Если непросканированные страницы закончились.
+            if (pages.isEmpty())
+            {
+                // Вывод информации.
+                System.out.println("Unscanned pages not found.");
+                System.out.println("Changing state to search sitemap pages.");
+
+                // Переключение состояния.
+                unscannedPages = false;
+
+                // Повторный вызов.
+                addPages(count);
+            }
+        }
+        else
+        {
+            // Sitemap страницы.
+            System.out.println("Adding " + count + " sitemap pages.");
+            pages = DBService.getInstance().getSitemapPages(count);
+        }
 
         // Добавление страниц.
-        for (Page page : pages2)
+        for (Page page : pages)
         {
             if (!processingLinks.contains(page.getUrl()))
             {
@@ -131,7 +157,7 @@ public class CrawlerManager
         }
 
         // Проверка.
-        if (pages.empty())
+        if (this.pages.isEmpty())
         {
             addPages(addPagesCount);
         }
