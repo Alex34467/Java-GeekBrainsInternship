@@ -133,12 +133,12 @@ public class PageProcessor implements Runnable
     public void processUsualPage(Page page)
     {
         // Получение списка личностей.
-        System.out.println("   Парсинг текста.");
-
         try
         {
             // Получение страницы.
             String document = Jsoup.connect(page.getUrl()).get().html();
+            int pageSize = document.length() / 1000;
+            System.out.println("   Парсинг текста: ~" + pageSize + "k chars.");
 
             // Обход личностей.
             for (Person person : persons)
