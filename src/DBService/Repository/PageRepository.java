@@ -36,95 +36,97 @@ public class PageRepository implements Repository<Page>
         executor.executeUpdate(query);
     }
 
-    // Выбор страницы gj Id..
+    // Выбор страницы по Id.
     @Override
     public Page getById(int id)
     {
-        throw new NotImplementedException();
+        // Подготовка запроса.
+        String query = "SELECT * FROM Pages WHERE Id = " + id;
+
+        // Выполнение запроса.
+        ResultSet resultSet = executor.executeQuery(query);
+
+        // Возврат результата.
+        return getPageFromResultSet(resultSet);
     }
 
     // Выбор страницы по имени.
-    public Page getByName(String name)
+    public Page getPageByUrl(String url)
     {
         // Подготовка запроса.
-        String query = "SELECT * FROM Pages WHERE Name = " + name;
+        String query = "SELECT * FROM Pages WHERE Url = " + url;
+
+        // Выполнение запроса.
         ResultSet resultSet = executor.executeQuery(query);
 
-        // Анализ результата.
-        Page page = null;
-        try
-        {
-            // Обход результата.
-            while (resultSet.next())
-            {
-                page = new Page(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(3), resultSet.getString(4), resultSet.getString(5));
-            }
-        }
-        catch (SQLException | NullPointerException e)
-        {
-            return page;
-        }
-
         // Возврат результата.
-        return page;
+        return getPageFromResultSet(resultSet);
     }
 
     // Выбор непросканированной страницы.
-    public Page getUnscannedpage()
+    public Page getUnscannedPage()
     {
         // Подготовка запроса.
         String query = "SELECT * FROM Pages WHERE lastScanDate IS NULL LIMIT 1";
+
+        // Выполнение запроса.
         ResultSet resultSet = executor.executeQuery(query);
 
-        // Анализ результата.
-        Page page = null;
-        try
-        {
-            while (resultSet.next())
-            {
-                page = new Page(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(3), resultSet.getString(4), resultSet.getString(5));
-            }
-        }
-        catch (SQLException e)
-        {
-            return page;
-        }
+        // Возврат результата.
+        return getPageFromResultSet(resultSet);
+    }
+
+    // Выбор непросканированных страниц.
+    public Collection<Page> getUnscannedPages(int count)
+    {
+        // Подготовка запроса.
+        String query = "SELECT * FROM Pages WHERE lastScanDate IS NULL LIMIT " + count;
+
+        // Выполнение запроса.
+        ResultSet resultSet = executor.executeQuery(query);
 
         // Возврат результата.
-        return page;
+        return getPagesFromResultSet(resultSet);
     }
 
     // Выбор всех страниц по Id сайта.
-    public Collection<Page> getAllPagesBySiteId(int id)
+    public Collection<Page> getAllPagesBySiteId(int siteId)
     {
         // Подготовка запроса.
-        String query = "SELECT * FROM Pages WHERE SiteId = " + id;
+        String query = "SELECT * FROM Pages WHERE SiteId = " + siteId;
+
+        // Выполнение запроса.
         ResultSet resultSet = executor.executeQuery(query);
 
-        // Обработка результата.
-        Collection<Page> pages = new HashSet<>();
-        try
-        {
-            while (resultSet.next())
-            {
-                Page page = new Page(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(3), resultSet.getString(4), resultSet.getString(5));
-                pages.add(page);
-            }
-        }
-        catch (SQLException e)
-        {
-            return pages;
-        }
+        // Возврат результата.
+        return getPagesFromResultSet(resultSet);
+    }
+
+    // Выбор sitemap страниц.
+    public Collection<Page> getSitemapPages(int count)
+    {
+        // Подготовка запроса.
+        String query = "SELECT * FROM Pages WHERE (Url LIKE \"%sitemap%\") AND (Url LIKE \"%.xml\") ORDER BY LastScanDate LIMIT " + count;
+
+        // Выполнение запроса.
+        ResultSet resultSet = executor.executeQuery(query);
 
         // Возврат результата.
-        return pages;
+        return getPagesFromResultSet(resultSet);
     }
 
     // Выбор всех страниц.
     @Override
     public Collection<Page> getAll()
     {
-        throw new NotImplementedException();
+        // Подготовка запроса.
+        String query = "SELECT * FROM Pages";
+
+        // Выполнение запроса.
+        ResultSet resultSet = executor.executeQuery(query);
+
+        // Возврат результата.
+        return getPagesFromResultSet(resultSet);
     }
 
     // Удаление.
@@ -149,5 +151,52 @@ public class PageRepository implements Repository<Page>
     public void update(Page page)
     {
         throw new NotImplementedException();
+    }
+
+    // Получение страницы из ResultSet'а.
+    private Page getPageFromResultSet(ResultSet resultSet)
+    {
+        // Данные.
+        Page page = null;
+
+        // Заполнение.
+        try
+        {
+            while (resultSet.next())
+            {
+                page = new Page(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(3), resultSet.getString(4), resultSet.getString(5));
+            }
+        }
+        catch (SQLException e)
+        {
+            return page;
+        }
+
+        // Возврат результата.
+        return page;
+    }
+
+    // Получение сираниц из ResultSet'а.
+    private Collection<Page> getPagesFromResultSet(ResultSet resultSet)
+    {
+        // Данные.
+        Collection<Page> pages = new HashSet<>();
+
+        // Заполнение.
+        try
+        {
+            while (resultSet.next())
+            {
+                Page page = new Page(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(3), resultSet.getString(4), resultSet.getString(5));
+                pages.add(page);
+            }
+        }
+        catch (SQLException e)
+        {
+            return pages;
+        }
+
+        // Возврат результата.
+        return pages;
     }
 }
