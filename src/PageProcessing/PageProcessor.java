@@ -18,7 +18,7 @@ public class PageProcessor implements Runnable
     private Collection<Person> persons;
     private CrawlerManager manager;
     private KeywordParser parser;
-    private boolean isRunning;
+    private int sleepTime = 5000;
 
 
     // Конструктор.
@@ -28,28 +28,35 @@ public class PageProcessor implements Runnable
         this.manager = manager;
         persons = manager.getPersons();
         this.parser = new KeywordParser();
-        isRunning = true;
     }
 
     // Выполнение.
     @Override
     public void run()
     {
-        while (isRunning)
+        while (!Thread.currentThread().isInterrupted())
         {
-            // Получение страницы.
-            Page page = manager.getPage();
-
-            if (page != null)
+            try
             {
-                System.out.println(name + ": take page " + page.getUrl());
+                // Получение страницы.
+                Page page = manager.getPage();
 
-                // Обработка станицы.
-                processPage(page);
+                if (page != null)
+                {
+                    // Обработка станицы.
+                    System.out.println(name + ": take page " + page.getUrl());
+                    processPage(page);
+                }
+                else
+                {
+                    // Пауза.
+                    System.out.println("No page found. Sleeping for " + sleepTime + " mills.");
+                    Thread.sleep(sleepTime);
+                }
             }
-            else
+            catch (InterruptedException e)
             {
-                isRunning = false;
+                System.out.println("Stopping.");
             }
         }
     }
