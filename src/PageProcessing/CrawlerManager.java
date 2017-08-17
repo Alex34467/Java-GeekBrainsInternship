@@ -145,6 +145,15 @@ public class CrawlerManager
             // Sitemap страницы.
             System.out.println("Adding " + count + " sitemap pages.");
             pages = DBService.getInstance().getSitemapPages(count);
+
+            // Если нет Sitemap страниц.
+            if (pages.isEmpty())
+            {
+                // Остановка.
+                System.out.println("Sitemap pages not found. Stopping.");
+                stopProcessors();
+                return;
+            }
         }
 
         // Добавление страниц.
@@ -160,6 +169,15 @@ public class CrawlerManager
         if (this.pages.isEmpty())
         {
             addPages(addPagesCount);
+        }
+    }
+
+    // Остановка обработчиков.
+    private void stopProcessors()
+    {
+        for (Thread thread : threads)
+        {
+            thread.interrupt();
         }
     }
 }
