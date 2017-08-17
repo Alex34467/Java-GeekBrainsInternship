@@ -68,13 +68,19 @@ public class DBService
     // Возврат непросканированной страницы.
     public synchronized Page getUnscannedPage()
     {
-        return pageRepository.getUnscannedpage();
+        return pageRepository.getUnscannedPage();
     }
 
     // Возврат непросканированной страницы.
     public synchronized Collection<Page> getUnscannedPages(int count)
     {
         return pageRepository.getUnscannedPages(count);
+    }
+
+    // Воврат sitemap станиц.
+    public synchronized Collection<Page> getSitemapPages(int count)
+    {
+        return pageRepository.getSitemapPages(count);
     }
 
     // Обновление даты сканирования.
