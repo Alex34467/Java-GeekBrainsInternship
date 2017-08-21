@@ -1,6 +1,9 @@
 package DBService;
 
+import Utility.MyLogger;
+
 import java.sql.*;
+import java.util.logging.Level;
 
 // Сервис БД.
 public class MySQLExecutor implements DBExecutor
@@ -24,20 +27,20 @@ public class MySQLExecutor implements DBExecutor
     @Override
     public ResultSet executeQuery(String query)
     {
+        MyLogger.log(Level.INFO, "Executing: " + query);
         // Результат.
         ResultSet resultSet = null;
 
         try
         {
             resultSet = statement.executeQuery(query);
+            MyLogger.log(Level.INFO, "Executed.");
             return resultSet;
         }
-        catch (SQLException e)
+        catch (SQLException | NullPointerException e)
         {
-            return resultSet;
-        }
-        catch (NullPointerException npe)
-        {
+            MyLogger.log(Level.SEVERE, "Error when executing: " + query);
+            MyLogger.log(Level.SEVERE, "Cause: " + e.getMessage());
             return resultSet;
         }
     }
@@ -46,39 +49,42 @@ public class MySQLExecutor implements DBExecutor
     @Override
     public void executeUpdate(String query)
     {
+        MyLogger.log(Level.INFO, "Executing: " + query);
         try
         {
             statement.executeUpdate(query);
+            MyLogger.log(Level.INFO, "Executed.");
         }
         catch (SQLException e)
         {
-
+            MyLogger.log(Level.SEVERE, "Error while executing: " + query);
+            MyLogger.log(Level.SEVERE, "Cause: " + e.getMessage());
         }
     }
 
     // Конструктор.
     private MySQLExecutor()
     {
-        System.out.println("Starting MySQLExecutor");
+        MyLogger.log(Level.INFO, "Starting MySQLExecutor");
         connect();
     }
 
     // Подключение.
     private void connect()
     {
-        System.out.println("Connection to DB.");
+        MyLogger.log(Level.INFO, "Connecting to DB.");
         try
         {
             // Плдключение.
             Connection connection = DriverManager.getConnection(url, user, password);
-            System.out.println("Successfully connected to database.");
+            MyLogger.log(Level.INFO, "Successfully connected to database.");
 
             // Создание состояния.
             statement = connection.createStatement();
         }
         catch (SQLException e)
         {
-            System.out.println("Connection failed.");
+            MyLogger.log(Level.SEVERE, "Connection failed.");
         }
     }
 }
