@@ -1,7 +1,8 @@
-package Util;
+package Utility;
 
 import org.jsoup.Jsoup;
 import java.io.IOException;
+
 
 // Загрузчик страниц.
 public class Downloader
